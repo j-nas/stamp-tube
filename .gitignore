@@ -2,5 +2,3 @@ node modules
 node_modules/
 .env
 user-stories.md
-_internal_docs
-_internal_docs/
