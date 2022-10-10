@@ -21,4 +21,8 @@
       - average rating across all submissions `?`
       - upvoted timestamps
       - downvoted timestamps
-4.
+4.  create routes
+5.  create ui
+    1. landing page
+    2. video page
+    3. timestamp authoring page
