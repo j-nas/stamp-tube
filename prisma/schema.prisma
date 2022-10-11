@@ -68,18 +68,20 @@ model VerificationToken {
 }
 
 model Video {
-    id           String    @id @unique
-    uploadedBy   String    @unique
-    title        String
-    timestamps   Timestamp @relation(fields: [timestampsId], references: [id])
-    timestampsId String
+    id                  String    @id @unique
+    uploadedBy          String    @unique
+    title               String
+    timestamps          Timestamp @relation(fields: [timestampsId], references: [id])
+    timestampsId        String
+    firstTimestampAdded DateTime
 }
 
 model Timestamp {
-    id       String  @id @default(cuid())
-    author   User    @relation(fields: [authorId], references: [id])
-    authorId String
-    Video    Video[]
+    id        String   @id @default(cuid())
+    author    User     @relation(fields: [authorId], references: [id])
+    authorId  String
+    Video     Video[]
+    published DateTime
     // upvotedBy   User[]
     // downvotedby User[]
 }
