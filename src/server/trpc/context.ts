@@ -4,7 +4,6 @@ import * as trpcNext from "@trpc/server/adapters/next";
 import { Session } from "next-auth";
 import { getServerAuthSession } from "../common/get-server-auth-session";
 import { prisma } from "../db/client";
-
 type CreateContextOptions = {
   session: Session | null;
 };
@@ -38,3 +37,4 @@ export const createContext = async (
 };
 
 export type Context = trpc.inferAsyncReturnType<typeof createContext>;
+
