@@ -18,7 +18,7 @@ export const serverSchema = z.object({
   ),
   DISCORD_CLIENT_ID: z.string(),
   DISCORD_CLIENT_SECRET: z.string(),
-  YOUTUBE_PUBLIC_API_KEY: z.string(),
+  YOUTUBE_API_KEY: z.string(),
 })
 
 /**
