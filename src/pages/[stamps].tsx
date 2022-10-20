@@ -1,6 +1,7 @@
 import { useRouter } from "next/router"
 import { useState } from "react"
 import { newLineFormatter } from "../utils/stringHelpers"
+import { trpc } from "../utils/trpc"
 import useSwr from "swr"
 import YoutubeEmbed from "../components/youtubeEmbed"
 import Head from "next/head"
@@ -21,6 +22,8 @@ const Stamps = () => {
   const router = useRouter()
   const { v } = router.query
   const { data, error } = useSwr(`/api/videoInfo?id=${v}`, fetcher)
+  const newApiData = trpc.youtube.getVideoInfo.useQuery({ v })
+  console.log("newapidata", newApiData.data?.data.items[0]?.snippet)
 
   if (typeof v !== "string" || v.length !== 11) {
     return <p>input has to be an 11 character string</p>
