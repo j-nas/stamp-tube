@@ -60,7 +60,7 @@ model VerificationToken {
 model Stamp {
     id         String      @id @default(cuid())
     video      String
-    created    DateTime
+    created    DateTime    @default(now())
     author     User        @relation(fields: [authorId], references: [id])
     authorId   String
     timestamps TimeStamp[]
