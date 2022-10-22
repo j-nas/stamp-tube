@@ -38,15 +38,14 @@ model Session {
 }
 
 model User {
-    id                   String    @id @default(cuid())
-    name                 String?
-    email                String?   @unique
-    emailVerified        DateTime?
-    image                String?
-    timestampsAuthoredId String
-    accounts             Account[]
-    sessions             Session[]
-    stamps               Stamp[]
+    id            String    @id @default(cuid())
+    name          String?
+    email         String?   @unique
+    emailVerified DateTime?
+    image         String?
+    accounts      Account[]
+    sessions      Session[]
+    stamps        Stamp[]
 }
 
 model VerificationToken {
