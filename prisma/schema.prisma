@@ -1,16 +1,9 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
     provider = "prisma-client-js"
 }
 
 datasource db {
     provider = "postgresql"
-    // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading: 
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
     url      = env("DATABASE_URL")
 }
 
@@ -18,19 +11,18 @@ model Example {
     id String @id @default(cuid())
 }
 
-// Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
     userId            String
     type              String
     provider          String
     providerAccountId String
-    refresh_token     String? @db.Text
-    access_token      String? @db.Text
+    refresh_token     String?
+    access_token      String?
     expires_at        Int?
     token_type        String?
     scope             String?
-    id_token          String? @db.Text
+    id_token          String?
     session_state     String?
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -46,17 +38,15 @@ model Session {
 }
 
 model User {
-    id                   String      @id @default(cuid())
+    id                   String    @id @default(cuid())
     name                 String?
-    email                String?     @unique
+    email                String?   @unique
     emailVerified        DateTime?
     image                String?
+    timestampsAuthoredId String
     accounts             Account[]
     sessions             Session[]
-    timestampsAuthored   Timestamp[]
-    timestampsAuthoredId String
-    // timestampsUpvoted   Timestamp[]
-    // timestampsDownvoted Timestamp[]
+    stamps               Stamp[]
 }
 
 model VerificationToken {
@@ -67,21 +57,19 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
-model Video {
-    id                  String    @id @unique
-    uploadedBy          String    @unique
-    title               String
-    timestamps          Timestamp @relation(fields: [timestampsId], references: [id])
-    timestampsId        String
-    firstTimestampAdded DateTime
+model Stamp {
+    id         String      @id @default(cuid())
+    video      String
+    created    DateTime
+    author     User        @relation(fields: [authorId], references: [id])
+    authorId   String
+    timestamps TimeStamp[]
 }
 
-model Timestamp {
-    id        String   @id @default(cuid())
-    author    User     @relation(fields: [authorId], references: [id])
-    authorId  String
-    Video     Video[]
-    published DateTime
-    // upvotedBy   User[]
-    // downvotedby User[]
+model TimeStamp {
+    id      String  @id @default(cuid())
+    stamp   Stamp   @relation(fields: [stampId], references: [id])
+    time    Decimal @unique
+    label   String
+    stampId String
 }
