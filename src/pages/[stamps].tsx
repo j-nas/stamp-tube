@@ -1,30 +1,23 @@
+import React, { useState } from "react"
 import { useRouter } from "next/router"
-import { useState } from "react"
-import { newLineFormatter } from "../utils/stringHelpers"
-import { trpc } from "../utils/trpc"
-import useSwr from "swr"
-import YoutubeEmbed from "../components/youtubeEmbed"
 import Head from "next/head"
-
-const fetcher = async (url: string) => {
-  const res = await fetch(url)
-  if (!res.ok) {
-    const error = new Error(
-      "This is an error constructor. Please give me a bettter message"
-    )
-    throw error
-  }
-  return res.json()
-}
+import { v4 as uuidv4 } from "uuid"
+import { trpc } from "../utils/trpc"
+import { newLineFormatter } from "../utils/stringHelpers"
+import YoutubeEmbed from "../components/youtubeEmbed"
 
 const Stamps = () => {
   const [descMaxLength, setDescMaxLength] = useState(500)
   const router = useRouter()
   const { v } = router.query
-  const { data, error } = useSwr(`/api/videoInfo?id=${v}`, fetcher)
-  const newApiData = trpc.youtube.getVideoInfo.useQuery({ v })
-  console.log("newapidata", newApiData.data?.data.items[0]?.snippet)
-
+  const { data } = trpc.youtube.getVideoInfo.useQuery({ v })
+  const stamps = trpc.stamps.createStamps.useMutation()
+  const title = data?.data.items[0]?.snippet.title
+  const description = data?.data.items[0]?.snippet.description
+  console.log(stamps)
+  if (!title || !description) {
+    return <p>loading</p>
+  }
   if (typeof v !== "string" || v.length !== 11) {
     return <p>input has to be an 11 character string</p>
   }
@@ -33,48 +26,41 @@ const Stamps = () => {
       <p className="flex flex-col items-center align-middle">nothing here</p>
     )
   }
-  if (error) {
-    console.log(typeof error)
-    return <p>error</p>
-  }
-  if (!data) return <p>Loading...</p>
-  const { title, description } = data
+
   const desc = description.slice(0, descMaxLength)
   return (
     <>
       <Head key="stamp">
         <title>{`StampTube: ${title}`}</title>
       </Head>
-      <main>
+      <main className="min-h-screen max-w-md bg-slate-700 bg-gradient-to-br from-indigo-500">
         <YoutubeEmbed embedId={v} />
         <p className="flex flex-col items-center align-middle">
           Video <a href={`https://www.youtube.com/watch?v=${v}`}>link</a>
         </p>
-        <div>
-          <p>
+        <div className=" text-white/80">
+          <p id="video-description">
             {newLineFormatter(desc).map((line) => {
               return (
-                <div>
+                <React.Fragment key={uuidv4()}>
                   {line}
 
                   <br />
-                </div>
+                </React.Fragment>
               )
             })}
           </p>
-          {descMaxLength === 500 ? (
-            <a
-              className="text-blue-800"
-              onClick={() => setDescMaxLength(99999)}
-            >
-              Show more
+          {description.length < 500 ? null : descMaxLength === 500 ? (
+            <a className="underline" onClick={() => setDescMaxLength(99999)}>
+              Show More
             </a>
           ) : (
-            <a className="text-blue-800" onClick={() => setDescMaxLength(500)}>
-              Show less
+            <a className="underline" onClick={() => setDescMaxLength(500)}>
+              Show Less
             </a>
           )}
         </div>
+        <div></div>
       </main>
     </>
   )
