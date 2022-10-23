@@ -10,6 +10,7 @@ const Home: NextPage = () => {
   const urlValidation = (url: string) => {
     return youtubeIdExtract(url)
   }
+  const session = useSession()
 
   return (
     <>
@@ -29,6 +30,7 @@ const Home: NextPage = () => {
         >
           Log in with Discord
         </Button>
+        <Button onClickFunction={() => signOut()}>Log outs</Button>
         <form className="p2 rounded-md border-2 border-zinc-400">
           <input type="text" onChange={(e) => setUrlForm(e.target.value)} />
           <button
@@ -38,6 +40,7 @@ const Home: NextPage = () => {
             submit
           </button>
         </form>
+        <div>{session.status}</div>
       </main>
     </>
   )
