@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { useRouter } from "next/router"
+import { useSession } from "next-auth/react"
 import Head from "next/head"
 import { v4 as uuidv4 } from "uuid"
 import { trpc } from "../utils/trpc"
@@ -9,12 +10,16 @@ import YoutubeEmbed from "../components/youtubeEmbed"
 const Stamps = () => {
   const [descMaxLength, setDescMaxLength] = useState(500)
   const router = useRouter()
+  const ctx = trpc.useContext()
   const { v } = router.query
   const { data } = trpc.youtube.getVideoInfo.useQuery({ v })
-  const stamps = trpc.stamps.createStamps.useMutation()
+  const videoId = data?.data.items[0]?.id
+  console.log(v, data)
   const title = data?.data.items[0]?.snippet.title
   const description = data?.data.items[0]?.snippet.description
-  console.log(stamps)
+  const stamps = trpc.stamps.getStamps.useQuery(videoId)
+  const createStamps = trpc.stamps.createStamps.useMutation()
+  const { data: session, status } = useSession()
   if (!title || !description) {
     return <p>loading</p>
   }
@@ -60,7 +65,21 @@ const Stamps = () => {
             </a>
           )}
         </div>
-        <div></div>
+
+        {session ? (
+          <div>
+            <a
+              onClick={() =>
+                createStamps.mutate({
+                  video: videoId,
+                  author: session.user?.id as string,
+                })
+              }
+            >
+              ADD STAMPS MAPHUCKA
+            </a>
+          </div>
+        ) : null}
       </main>
     </>
   )
