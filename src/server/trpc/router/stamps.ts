@@ -3,14 +3,31 @@ import { z } from "zod"
 
 export const stampsRouter = t.router({
   getStamps: t.procedure.input(z.string()).query(({ ctx, input }) => {
-    return ctx.prisma.stamp.findMany({ where: { video: input } })
-  }),
-  createStamps: authedProcedure.input(z.any()).mutation(({ ctx, input }) => {
-    const data = ctx.prisma.user.findUnique({
-      where: { id: ctx.session.user.id },
+    return ctx.prisma.stamp.findMany({
+      where: { video: input },
+      include: { author: true, timestamps: true },
     })
-    const account = ctx.prisma.account.findMany()
-    console.log(data)
-    return data
   }),
+  createStamps: authedProcedure
+    .input(
+      z.object({
+        video: z.string(),
+        author: z.string(),
+      })
+    )
+    .mutation(({ input, ctx }) => {
+      return ctx.prisma.stamp.create({
+        data: {
+          video: input.video,
+          author: {
+            connect: { id: input.author },
+          },
+        },
+      })
+    }),
+  deleteStamp: authedProcedure
+    .input(z.object({ stampId: z.string() }))
+    .mutation(({ input, ctx }) => {
+      return ctx.prisma.stamp.delete({ where: { id: input.stampId } })
+    }),
 })

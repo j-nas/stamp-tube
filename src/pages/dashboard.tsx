@@ -1,5 +1,5 @@
 import React, { FormEvent, useState } from "react"
-import { useRouter } from "next/router"
+import Head from "next/head"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { trpc } from "../utils/trpc"
 import Button from "../components/button"
@@ -8,27 +8,56 @@ enum View {
   VideoInfo = "VIDEO_INFO",
   Stamps = "STAMPS",
 }
+
 const Dashboard = () => {
-  const { data: session, status } = useSession()
   const [videoIdInput, setVideoIdInput] = useState("csEjOEUIntw")
   const [currentVideoId, setCurrentVideoId] = useState("csEjOEUIntw")
   const [view, setView] = useState<View>(View.VideoInfo)
-  const videoData = trpc.youtube.getVideoInfo.useQuery({ v: currentVideoId })
+  const { data: session, status } = useSession()
+  const ctx = trpc.useContext()
+  const {
+    data: videoInfo,
+    isLoading: getVideoInfoIsLoading,
+    isError: getVideoInfoIsError,
+  } = trpc.youtube.getVideoInfo.useQuery(currentVideoId)
+  const {
+    data: stamps,
+    isLoading: getStampsIsLoading,
+    isError: getStampsIsError,
+  } = trpc.stamps.getStamps.useQuery(currentVideoId)
+  const createNewStamp = trpc.stamps.createStamps.useMutation({
+    onMutate: async () => {
+      ctx.stamps.getStamps.cancel()
+      let optimisticUpdate = await ctx.stamps.getStamps.fetch(currentVideoId)
+      if (optimisticUpdate) {
+        ctx.stamps.getStamps.setData(optimisticUpdate)
+      }
+    },
+    onSettled: () => ctx.stamps.getStamps.invalidate(),
+  })
+  const deleteStamp = trpc.stamps.deleteStamp.useMutation({
+    onMutate: async (deletedStamp) => {
+      ctx.stamps.getStamps.cancel()
+      let optimisticUpdate = await ctx.stamps.getStamps.fetch(currentVideoId)
+      if (optimisticUpdate) {
+        ctx.stamps.getStamps.setData(
+          optimisticUpdate.filter((stamp) => stamp.id !== deletedStamp.stampId)
+        )
+      }
+    },
+    onSettled: () => ctx.stamps.getStamps.invalidate(),
+  })
 
-  if (!videoData.data) return <p>loading...</p>
-  const videoInfo = {
-    videoId: videoData.data.data.items[0]?.id,
-    title: videoData.data.data.items[0]?.snippet.title,
-    description: videoData.data.data.items[0]?.snippet.description,
-  }
-  const { videoId, title, description } = videoInfo
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setCurrentVideoId(videoIdInput)
   }
-  console.log(videoData)
+
   return (
     <>
+      <Head>
+        <title>Admin Dashboard</title>
+      </Head>
       <main className="flex h-screen w-screen flex-col place-content-center items-center justify-center gap-3 bg-gradient-to-tl from-teal-500 via-fuchsia-400 to-purple-900 text-white/50">
         <div className="flex h-auto max-h-min w-1/2 flex-col justify-items-center rounded-2xl bg-black/50 p-2 text-center drop-shadow-xl hover:backdrop-blur-3xl">
           <h1 className="justify-self-center text-5xl">Admin Dashboard</h1>
@@ -72,29 +101,73 @@ const Dashboard = () => {
           </div>
         </div>
         {view === View.VideoInfo && (
-          <div className="bg-black/50 text-3xl">
-            <h2>Video Info from youtube api</h2>
-            <table className="table-fixed text-lg">
-              <thead>
-                <tr>
-                  <th>Video ID</th>
-                  <th>Title</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{videoId}</td>
-                  <td>{title}</td>
-                  <td>{description}</td>
-                </tr>
-              </tbody>
-            </table>
+          <div className="bg-black/50">
+            <h2 className="text-3xl">Video Info from youtube api</h2>
+            {getVideoInfoIsLoading ? (
+              "loading"
+            ) : (
+              <table className="table-fixed text-lg">
+                <thead>
+                  <tr>
+                    <th>Video ID</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Duration</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{videoInfo?.id}</td>
+                    <td>{videoInfo?.title}</td>
+                    <td>{videoInfo?.description.slice(0, 100)}</td>
+                    <td>{videoInfo?.duration}</td>
+                  </tr>
+                </tbody>
+              </table>
+            )}
           </div>
         )}
         {view === View.Stamps && (
-          <div>
-            <h2 className="rounded-xl bg-black/50 text-3xl">Stamps</h2>
+          <div className="rounded-xl bg-black/50 p-2">
+            <h2 className="text-3xl">Stamps</h2>
+            {status === "authenticated" && (
+              <div>
+                <Button
+                  onClickFunction={() =>
+                    createNewStamp.mutate({
+                      author: session?.user?.id as string,
+                      video: videoInfo?.id as string,
+                    })
+                  }
+                >
+                  Create new stamp
+                </Button>
+              </div>
+            )}
+            {getStampsIsLoading ? (
+              "loading"
+            ) : (
+              <ul>
+                {stamps?.map((stmp) => (
+                  <li key={stmp.id}>
+                    {`Author: ${
+                      stmp.author.name
+                    } Created: ${stmp.created.toLocaleString()} Number of timestamps: ${
+                      stmp.timestamps.length
+                    } `}
+                    {status === "authenticated" && (
+                      <Button
+                        onClickFunction={() =>
+                          deleteStamp.mutate({ stampId: stmp.id })
+                        }
+                      >
+                        Delete
+                      </Button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         )}
       </main>
