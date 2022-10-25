@@ -32,4 +32,7 @@ export const youtubeApiRouter = t.router({
       console.log(result)
       return result
     }),
+  getVideosWithStamps: t.procedure.query(() => {
+    return []
+  }),
 })

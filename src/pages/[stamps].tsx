@@ -17,7 +17,7 @@ const Stamps = () => {
   console.log(v, data)
   const title = data?.data.items[0]?.snippet.title
   const description = data?.data.items[0]?.snippet.description
-  const stamps = trpc.stamps.getStamps.useQuery(videoId)
+  const stamps = trpc.stamps.getStampsByVideo.useQuery(videoId)
   const createStamps = trpc.stamps.createStamps.useMutation()
   const { data: session, status } = useSession()
   if (!title || !description) {

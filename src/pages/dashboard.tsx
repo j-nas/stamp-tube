@@ -6,7 +6,9 @@ import Button from "../components/button"
 
 enum View {
   VideoInfo = "VIDEO_INFO",
-  Stamps = "STAMPS",
+  VideosWithStamps = "VIDEOS_WITH_STAMPS",
+  StampsByVideo = "STAMPS_BY_VIDEO",
+  StampsByAuthor = "STAMPS_BY_USER",
 }
 
 const Dashboard = () => {
@@ -21,31 +23,40 @@ const Dashboard = () => {
     isError: getVideoInfoIsError,
   } = trpc.youtube.getVideoInfo.useQuery(currentVideoId)
   const {
-    data: stamps,
+    data: stampsByUser,
     isLoading: getStampsIsLoading,
     isError: getStampsIsError,
-  } = trpc.stamps.getStamps.useQuery(currentVideoId)
+  } = trpc.stamps.getStampsByVideo.useQuery(currentVideoId)
+  const {
+    data: stampsByVideo,
+    isLoading: getStampsByAuthorIsLoading,
+    isError: getStampsByAuthorIsError,
+  } = trpc.stamps.getStampsByAuthor.useQuery(currentVideoId)
   const createNewStamp = trpc.stamps.createStamps.useMutation({
     onMutate: async () => {
-      ctx.stamps.getStamps.cancel()
-      let optimisticUpdate = await ctx.stamps.getStamps.fetch(currentVideoId)
+      ctx.stamps.getStampsByVideo.cancel()
+      let optimisticUpdate = await ctx.stamps.getStampsByVideo.fetch(
+        currentVideoId
+      )
       if (optimisticUpdate) {
-        ctx.stamps.getStamps.setData(optimisticUpdate)
+        ctx.stamps.getStampsByVideo.setData(optimisticUpdate)
       }
     },
-    onSettled: () => ctx.stamps.getStamps.invalidate(),
+    onSettled: () => ctx.stamps.getStampsByVideo.invalidate(),
   })
   const deleteStamp = trpc.stamps.deleteStamp.useMutation({
     onMutate: async (deletedStamp) => {
-      ctx.stamps.getStamps.cancel()
-      let optimisticUpdate = await ctx.stamps.getStamps.fetch(currentVideoId)
+      ctx.stamps.getStampsByVideo.cancel()
+      let optimisticUpdate = await ctx.stamps.getStampsByVideo.fetch(
+        currentVideoId
+      )
       if (optimisticUpdate) {
-        ctx.stamps.getStamps.setData(
+        ctx.stamps.getStampsByVideo.setData(
           optimisticUpdate.filter((stamp) => stamp.id !== deletedStamp.stampId)
         )
       }
     },
-    onSettled: () => ctx.stamps.getStamps.invalidate(),
+    onSettled: () => ctx.stamps.getStampsByVideo.invalidate(),
   })
 
   function handleSubmit(e: FormEvent) {
@@ -74,8 +85,11 @@ const Dashboard = () => {
               </Button>
             </>
             <>
-              <Button onClickFunction={() => setView(View.Stamps)}>
-                Stamp list
+              <Button onClickFunction={() => setView(View.StampsByVideo)}>
+                Stamps by Video
+              </Button>
+              <Button onClickFunction={() => setView(View.StampsByAuthor)}>
+                Stamps by Author
               </Button>
             </>
             <p>Status: {status}</p>
@@ -127,9 +141,9 @@ const Dashboard = () => {
             )}
           </div>
         )}
-        {view === View.Stamps && (
+        {view === View.StampsByVideo && (
           <div className="rounded-xl bg-black/50 p-2">
-            <h2 className="text-3xl">Stamps</h2>
+            <h2 className="text-3xl">Stamps by video</h2>
             {status === "authenticated" && (
               <div>
                 <Button
@@ -148,7 +162,50 @@ const Dashboard = () => {
               "loading"
             ) : (
               <ul>
-                {stamps?.map((stmp) => (
+                {stampsByUser?.map((stmp) => (
+                  <li key={stmp.id}>
+                    {`Author: ${
+                      stmp.author.name
+                    } Created: ${stmp.created.toLocaleString()} Number of timestamps: ${
+                      stmp.timestamps.length
+                    } `}
+                    {status === "authenticated" && (
+                      <Button
+                        onClickFunction={() =>
+                          deleteStamp.mutate({ stampId: stmp.id })
+                        }
+                      >
+                        Delete
+                      </Button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+        {view === View.StampsByAuthor && (
+          <div className="rounded-xl bg-black/50 p-2">
+            <h2 className="text-3xl">Stamps by user</h2>
+            {status === "authenticated" && (
+              <div>
+                <Button
+                  onClickFunction={() =>
+                    createNewStamp.mutate({
+                      author: session?.user?.id as string,
+                      video: videoInfo?.id as string,
+                    })
+                  }
+                >
+                  Create new stamp
+                </Button>
+              </div>
+            )}
+            {getStampsByAuthorIsLoading ? (
+              "loading"
+            ) : (
+              <ul>
+                {stampsByUser?.map((stmp) => (
                   <li key={stmp.id}>
                     {`Author: ${
                       stmp.author.name

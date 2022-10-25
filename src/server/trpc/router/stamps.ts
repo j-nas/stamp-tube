@@ -2,9 +2,15 @@ import { t, authedProcedure } from "../trpc"
 import { z } from "zod"
 
 export const stampsRouter = t.router({
-  getStamps: t.procedure.input(z.string()).query(({ ctx, input }) => {
+  getStampsByVideo: t.procedure.input(z.string()).query(({ ctx, input }) => {
     return ctx.prisma.stamp.findMany({
       where: { video: input },
+      include: { author: true, timestamps: true },
+    })
+  }),
+  getStampsByAuthor: t.procedure.input(z.string()).query(({ ctx, input }) => {
+    return ctx.prisma.stamp.findMany({
+      where: { authorId: input },
       include: { author: true, timestamps: true },
     })
   }),
