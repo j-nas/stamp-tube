@@ -23,6 +23,11 @@ const Dashboard = () => {
     isError: getVideoInfoIsError,
   } = trpc.youtube.getVideoInfo.useQuery(currentVideoId)
   const {
+    data: videosWithStamps,
+    isLoading: getVideosWithStampsIsLoading,
+    isError: getVideosWithStampsIsError,
+  } = trpc.youtube.getVideosWithStamps.useQuery()
+  const {
     data: stampsByUser,
     isLoading: getStampsIsLoading,
     isError: getStampsIsError,
@@ -63,7 +68,6 @@ const Dashboard = () => {
     e.preventDefault()
     setCurrentVideoId(videoIdInput)
   }
-
   return (
     <>
       <Head>
@@ -90,6 +94,9 @@ const Dashboard = () => {
               </Button>
               <Button onClickFunction={() => setView(View.StampsByAuthor)}>
                 Stamps by Author
+              </Button>
+              <Button onClickFunction={() => setView(View.VideosWithStamps)}>
+                Videos with stamps
               </Button>
             </>
             <p>Status: {status}</p>
@@ -221,6 +228,50 @@ const Dashboard = () => {
                         Delete
                       </Button>
                     )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+        {view === View.VideosWithStamps && (
+          <div className="rounded-xl bg-black/50 p-2">
+            <h2 className="text-3xl">Videos with stamps</h2>
+            {/* {status === "authenticated" && (
+              <div>
+                <Button
+                  onClickFunction={() =>
+                    createNewStamp.mutate({
+                      author: session?.user?.id as string,
+                      video: videoInfo?.id as string,
+                    })
+                  }
+                >
+                  Create new stamp
+                </Button>
+              </div>
+            )} */}
+            {getVideosWithStampsIsLoading ? (
+              "loading"
+            ) : (
+              <ul>
+                {videosWithStamps?.map((video) => (
+                  <li key={video.id}>
+                    Title:
+                    <a onClick={() => setCurrentVideoId(video.id)}>
+                      {`${video.title} | `}
+                    </a>
+                    {`Description: ${video.description.slice(0, 50)} | `}
+                    {`Number of stamps: ${"place holder"}`}
+                    {/* {status === "authenticated" && (
+                      <Button
+                        onClickFunction={() =>
+                          deleteStamp.mutate({ stampId: video.id })
+                        }
+                      >
+                        Delete
+                      </Button>
+                    )} */}
                   </li>
                 ))}
               </ul>
