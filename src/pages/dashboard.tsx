@@ -77,8 +77,8 @@ const Dashboard = () => {
       <Head>
         <title>Admin Dashboard</title>
       </Head>
-      <main className="flex h-screen w-screen flex-col place-content-center items-center justify-center gap-3 bg-gradient-to-tl from-teal-500 via-fuchsia-400 to-purple-900 text-white/50">
-        <div className="flex h-auto max-h-min w-1/2 flex-col justify-items-center rounded-2xl bg-black/50 p-2 text-center drop-shadow-xl hover:backdrop-blur-3xl">
+      <main className="flex  flex-col place-content-center items-center justify-center gap-3 bg-gradient-to-tl from-teal-500 via-fuchsia-400 to-purple-900 text-white/50">
+        <div className="flex max-h-fit w-1/2 flex-col justify-items-center rounded-2xl bg-black/50 p-2 text-center drop-shadow-xl hover:backdrop-blur-3xl">
           <div>
             <ul>
               {videoList.map((video) => (
@@ -206,7 +206,7 @@ const Dashboard = () => {
           </div>
         )}
         {view === View.StampsByAuthor && (
-          <div className="rounded-xl bg-black/50 p-2">
+          <div className=" rounded-xl bg-black/50 p-2 drop-shadow-2xl">
             <h2 className="text-3xl">
               {!session ? "Please log in" : `Stamps by ${session.user?.name}`}
             </h2>
@@ -232,9 +232,14 @@ const Dashboard = () => {
                   <li key={stmp.id}>
                     {`Author: ${
                       stmp.author.name
-                    } Created: ${stmp.created.toLocaleString()} Video title: 
-                      
-                     `}
+                    } Created: ${stmp.created.toLocaleString()} Video title:`}{" "}
+                    <a onClick={() => setCurrentVideoId(stmp.video)}>
+                      {
+                        videosWithStamps
+                          ?.filter((elem) => elem.id === stmp.video)
+                          .at(0)?.title
+                      }
+                    </a>
                     {status === "authenticated" && (
                       <Button
                         onClickFunction={() =>
