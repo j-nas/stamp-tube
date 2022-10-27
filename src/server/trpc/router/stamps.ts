@@ -8,12 +8,16 @@ export const stampsRouter = t.router({
       include: { author: true, timestamps: true },
     })
   }),
-  getStampsByAuthor: t.procedure.input(z.string()).query(({ ctx, input }) => {
-    return ctx.prisma.stamp.findMany({
-      where: { authorId: input },
-      include: { author: true, timestamps: true },
-    })
-  }),
+  getStampsByAuthor: t.procedure
+    .input(z.string().nullish())
+    .query(({ ctx, input }) => {
+      if (!input) return
+
+      return ctx.prisma.stamp.findMany({
+        where: { authorId: input },
+        include: { author: true, timestamps: true },
+      })
+    }),
   createStamps: authedProcedure
     .input(
       z.object({

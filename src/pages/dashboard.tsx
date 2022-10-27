@@ -3,6 +3,8 @@ import Head from "next/head"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { trpc } from "../utils/trpc"
 import Button from "../components/button"
+import { videoList } from "../utils/mockData"
+import { randomUUID as uuid } from "crypto"
 
 enum View {
   VideoInfo = "VIDEO_INFO",
@@ -31,12 +33,13 @@ const Dashboard = () => {
     data: stampsByUser,
     isLoading: getStampsIsLoading,
     isError: getStampsIsError,
-  } = trpc.stamps.getStampsByVideo.useQuery(currentVideoId)
+  } = trpc.stamps.getStampsByAuthor.useQuery(session?.user?.id)
   const {
     data: stampsByVideo,
     isLoading: getStampsByAuthorIsLoading,
     isError: getStampsByAuthorIsError,
-  } = trpc.stamps.getStampsByAuthor.useQuery(currentVideoId)
+    status: videostatus,
+  } = trpc.stamps.getStampsByVideo.useQuery(currentVideoId)
   const createNewStamp = trpc.stamps.createStamps.useMutation({
     onMutate: async () => {
       ctx.stamps.getStampsByVideo.cancel()
@@ -63,11 +66,12 @@ const Dashboard = () => {
     },
     onSettled: () => ctx.stamps.getStampsByVideo.invalidate(),
   })
-
+  console.log(videosWithStamps)
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setCurrentVideoId(videoIdInput)
   }
+
   return (
     <>
       <Head>
@@ -75,7 +79,17 @@ const Dashboard = () => {
       </Head>
       <main className="flex h-screen w-screen flex-col place-content-center items-center justify-center gap-3 bg-gradient-to-tl from-teal-500 via-fuchsia-400 to-purple-900 text-white/50">
         <div className="flex h-auto max-h-min w-1/2 flex-col justify-items-center rounded-2xl bg-black/50 p-2 text-center drop-shadow-xl hover:backdrop-blur-3xl">
+          <div>
+            <ul>
+              {videoList.map((video) => (
+                <li>
+                  <a onClick={() => setCurrentVideoId(video)}>{video}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
           <h1 className="justify-self-center text-5xl">Admin Dashboard</h1>
+          {/*navbuttons */}
           <div className="flex flex-row align-middle">
             <>
               <Button onClickFunction={() => signIn()}>Log in</Button>
@@ -121,7 +135,7 @@ const Dashboard = () => {
             </form>
           </div>
         </div>
-        {view === View.VideoInfo && (
+        {
           <div className="bg-black/50">
             <h2 className="text-3xl">Video Info from youtube api</h2>
             {getVideoInfoIsLoading ? (
@@ -147,7 +161,7 @@ const Dashboard = () => {
               </table>
             )}
           </div>
-        )}
+        }
         {view === View.StampsByVideo && (
           <div className="rounded-xl bg-black/50 p-2">
             <h2 className="text-3xl">Stamps by video</h2>
@@ -169,7 +183,7 @@ const Dashboard = () => {
               "loading"
             ) : (
               <ul>
-                {stampsByUser?.map((stmp) => (
+                {stampsByVideo?.map((stmp) => (
                   <li key={stmp.id}>
                     {`Author: ${
                       stmp.author.name
@@ -193,7 +207,9 @@ const Dashboard = () => {
         )}
         {view === View.StampsByAuthor && (
           <div className="rounded-xl bg-black/50 p-2">
-            <h2 className="text-3xl">Stamps by user</h2>
+            <h2 className="text-3xl">
+              {!session ? "Please log in" : `Stamps by ${session.user?.name}`}
+            </h2>
             {status === "authenticated" && (
               <div>
                 <Button
@@ -216,9 +232,9 @@ const Dashboard = () => {
                   <li key={stmp.id}>
                     {`Author: ${
                       stmp.author.name
-                    } Created: ${stmp.created.toLocaleString()} Number of timestamps: ${
-                      stmp.timestamps.length
-                    } `}
+                    } Created: ${stmp.created.toLocaleString()} Video title: 
+                      
+                     `}
                     {status === "authenticated" && (
                       <Button
                         onClickFunction={() =>
@@ -262,7 +278,7 @@ const Dashboard = () => {
                       {`${video.title} | `}
                     </a>
                     {`Description: ${video.description.slice(0, 50)} | `}
-                    {`Number of stamps: ${"place holder"}`}
+                    {`Number of stamps: placeholer`}
                     {/* {status === "authenticated" && (
                       <Button
                         onClickFunction={() =>
