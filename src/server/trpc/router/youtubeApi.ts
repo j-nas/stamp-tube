@@ -1,11 +1,13 @@
 import { t } from "../trpc"
 import { z } from "zod"
 import axios from "axios"
+import { PrismaPromise } from "@prisma/client"
 interface VideoInfo {
   id: string
   title: string
   description: string
   duration: string
+  stampCount: PrismaPromise<number>
 }
 
 interface YouTubeApiResponse {
@@ -19,15 +21,18 @@ interface YouTubeApiResponse {
   }
 }
 export const youtubeApiRouter = t.router({
-  getVideoInfo: t.procedure.input(z.string()).query(async ({ input }) => {
+  getVideoInfo: t.procedure.input(z.string()).query(async ({ input, ctx }) => {
     if (!input) return
     const url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${input}&key=${process.env.YOUTUBE_API_KEY}`
     const { data } = await axios(url)
-    const result: VideoInfo = {
+    const result = {
       id: data.items[0].id,
       title: data.items[0].snippet.title,
       description: data.items[0].snippet.description,
       duration: data.items[0].contentDetails.duration,
+      stampCount: await ctx.prisma.stamp.count({
+        where: { video: data.items[0].id },
+      }),
     }
     return result
   }),
@@ -38,13 +43,16 @@ export const youtubeApiRouter = t.router({
     ).join(",")
     const url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoList}&key=${process.env.YOUTUBE_API_KEY}`
     const { data } = await axios.get(url)
-    const result: VideoInfo[] = data.items.map(
-      (video: YouTubeApiResponse): VideoInfo => ({
+    const result: VideoInfo[] = await Promise.all(
+      data.items.map(async (video: YouTubeApiResponse) => ({
         id: video.id,
         title: video.snippet.title,
         description: video.snippet.description,
         duration: video.contentDetails.duration,
-      })
+        stampCount: await ctx.prisma.stamp.count({
+          where: { video: video.id },
+        }),
+      }))
     )
     return result
   }),

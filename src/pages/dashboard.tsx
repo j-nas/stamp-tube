@@ -66,7 +66,6 @@ const Dashboard = () => {
     },
     onSettled: () => ctx.stamps.getStampsByVideo.invalidate(),
   })
-  console.log(videosWithStamps)
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setCurrentVideoId(videoIdInput)
@@ -148,6 +147,7 @@ const Dashboard = () => {
                     <th>Title</th>
                     <th>Description</th>
                     <th>Duration</th>
+                    <th>Number of stamps</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -156,6 +156,7 @@ const Dashboard = () => {
                     <td>{videoInfo?.title}</td>
                     <td>{videoInfo?.description.slice(0, 100)}</td>
                     <td>{videoInfo?.duration}</td>
+                    <td>{videoInfo?.stampCount}</td>
                   </tr>
                 </tbody>
               </table>
@@ -283,7 +284,7 @@ const Dashboard = () => {
                       {`${video.title} | `}
                     </a>
                     {`Description: ${video.description.slice(0, 50)} | `}
-                    {`Number of stamps: placeholer`}
+                    {`Number of stamps: ${video.stampCount}`}
                     {/* {status === "authenticated" && (
                       <Button
                         onClickFunction={() =>
