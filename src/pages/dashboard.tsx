@@ -11,6 +11,7 @@ enum View {
   VideosWithStamps = "VIDEOS_WITH_STAMPS",
   StampsByVideo = "STAMPS_BY_VIDEO",
   StampsByAuthor = "STAMPS_BY_USER",
+  UserList = "USER_LIST",
 }
 
 const Dashboard = () => {
@@ -38,8 +39,12 @@ const Dashboard = () => {
     data: stampsByVideo,
     isLoading: getStampsByAuthorIsLoading,
     isError: getStampsByAuthorIsError,
-    status: videostatus,
   } = trpc.stamps.getStampsByVideo.useQuery(currentVideoId)
+  const {
+    data: userList,
+    isLoading: getUserListIsLoading,
+    isError: getUserListIsError,
+  } = trpc.users.getAllUsers.useQuery()
   const createNewStamp = trpc.stamps.createStamps.useMutation({
     onMutate: async () => {
       ctx.stamps.getStampsByVideo.cancel()
@@ -108,8 +113,12 @@ const Dashboard = () => {
               <Button onClickFunction={() => setView(View.StampsByAuthor)}>
                 Stamps by Author
               </Button>
+
+              <Button onClickFunction={() => setView(View.UserList)}>
+                User List
+              </Button>
               <Button onClickFunction={() => setView(View.VideosWithStamps)}>
-                Videos with stamps
+                Videos with stampsdsf
               </Button>
             </>
             <p>Status: {status}</p>
@@ -143,7 +152,7 @@ const Dashboard = () => {
               <table className="table-fixed text-lg">
                 <thead>
                   <tr>
-                    <th>Video ID</th>
+                    <th>User ID</th>
                     <th>Title</th>
                     <th>Description</th>
                     <th>Duration</th>
@@ -207,7 +216,7 @@ const Dashboard = () => {
           </div>
         )}
         {view === View.StampsByAuthor && (
-          <div className=" rounded-xl bg-black/50 p-2 drop-shadow-2xl">
+          <div className="tra rounded-xl bg-black/50 p-2 drop-shadow-2xl">
             <h2 className="text-3xl">
               {!session ? "Please log in" : `Stamps by ${session.user?.name}`}
             </h2>
@@ -297,6 +306,38 @@ const Dashboard = () => {
                   </li>
                 ))}
               </ul>
+            )}
+          </div>
+        )}
+        {view === View.UserList && (
+          <div className="bg-black/50">
+            <h2 className="text-3xl">Video Info from youtube api</h2>
+            {getUserListIsLoading ? (
+              "loading"
+            ) : (
+              <table className="table-fixed text-lg">
+                <thead>
+                  <tr>
+                    <th>user ID</th>
+                    <th>Name</th>
+                    <th>PFP</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {userList?.map((user) => (
+                    <tr>
+                      <td>{user?.id}</td>
+                      <td>{user?.name}</td>
+                      <td>
+                        <img
+                          className="scale-[0.1]"
+                          src={user.image ? user.image : ""}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             )}
           </div>
         )}
