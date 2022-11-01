@@ -30,3 +30,5 @@ export const authRouter = t.router({
     }
   }),
 })
+
+export type AuthRouter = typeof authRouter
