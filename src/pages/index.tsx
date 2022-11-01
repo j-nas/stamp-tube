@@ -5,13 +5,14 @@ import { trpc } from "../utils/trpc"
 import Button from "../components/button"
 import { useState } from "react"
 import { youtubeIdExtract } from "../utils/urlHelpers"
+import { useRouter } from "next/router"
 const Home: NextPage = () => {
   const [urlForm, setUrlForm] = useState("")
   const urlValidation = (url: string) => {
     return youtubeIdExtract(url)
   }
   const session = useSession()
-
+  const router = useRouter()
   return (
     <>
       <Head>
@@ -29,6 +30,12 @@ const Home: NextPage = () => {
           onClickFunction={() => signIn("discord")}
         >
           Log in with Discord
+        </Button>
+        <Button
+          bgColor="bg-yellow-400"
+          onClickFunction={() => router.push("/auth/new-user")}
+        >
+          Sign up
         </Button>
         <Button onClickFunction={() => signOut()}>Log outs</Button>
         <form className="p2 rounded-md border-2 border-zinc-400">

@@ -18,12 +18,16 @@ export const authOptions: NextAuthOptions = {
       }
       return session
     },
-    jwt: async ({ token, user }) => {
-      if (user) {
-        ;(token.id = user.id), (token.email = user.email)
-      }
-      return token
-    },
+    // jwt: async ({ token, user }) => {
+    //   if (user) {
+    //     ;(token.id = user.id), (token.email = user.email)
+    //   }
+    //   return token
+    // },
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    newUser: "/auth/new-user",
   },
   // Configure one or more authentication providers
   adapter: PrismaAdapter(prisma),
@@ -60,7 +64,7 @@ export const authOptions: NextAuthOptions = {
         return {
           id: user.id,
           email: user.email,
-          username: user.username,
+          name: user.name,
         }
       },
     }),

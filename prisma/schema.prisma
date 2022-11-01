@@ -40,7 +40,6 @@ model Session {
 model User {
     id            String    @id @default(cuid())
     name          String?
-    username      String
     email         String    @unique
     emailVerified DateTime?
     image         String?
@@ -50,6 +49,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     stamps        Stamp[]
+    role          Role      @default(USER)
 }
 
 model VerificationToken {
@@ -75,4 +75,9 @@ model TimeStamp {
     time    Decimal @unique
     label   String
     stampId String
+}
+
+enum Role {
+    USER
+    ADMIN
 }
