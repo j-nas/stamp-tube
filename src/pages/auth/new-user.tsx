@@ -63,7 +63,10 @@ const NewUser: NextPage = () => {
                 <Link href="/" className="link">
                   Go to login
                 </Link>
-                <button className="btn btn-secondary" type="submit">
+                <button
+                  className="btn btn-secondary border drop-shadow-2xl"
+                  type="submit"
+                >
                   Sign Up
                 </button>
               </div>
