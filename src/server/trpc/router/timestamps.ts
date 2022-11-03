@@ -30,5 +30,32 @@ export const timeStampRouter = t.router({
       })
     }),
   //edit stamp
+  editTimeStamp: authedProcedure
+    .input(z.object({
+      id: z.string(),
+      label: z.string(),
+      time: z.number()
+    }))
+    .mutation(({ ctx, input }) => {
+      const { id, label, time } = input
+      return ctx.prisma.timeStamp.update({
+        where: {
+          id: id
+        },
+        data: {
+          label: label,
+          time: time
+        },
+      })
+    }),
   //delete one stamp
+  deleteTimeStamp: authedProcedure
+    .input(z.string())
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.timeStamp.delete({
+        where: {
+          id: input
+        }
+      })
+    })
 })
