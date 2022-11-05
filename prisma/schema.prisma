@@ -50,6 +50,7 @@ model User {
     sessions      Session[]
     stamps        Stamp[]
     role          Role      @default(USER)
+    Vote          Vote[]
 }
 
 model VerificationToken {
@@ -67,6 +68,7 @@ model Stamp {
     author     User        @relation(fields: [authorId], references: [id])
     authorId   String
     timestamps TimeStamp[]
+    Vote       Vote[]
 }
 
 model TimeStamp {
@@ -80,4 +82,15 @@ model TimeStamp {
 enum Role {
     USER
     ADMIN
+}
+
+model Vote {
+    id       String   @id @default(cuid())
+    upOrDown Int      @db.SmallInt
+    user     User     @relation(fields: [userId], references: [id])
+    stamp    Stamp    @relation(fields: [stampId], references: [id])
+    userId   String
+    stampId  String
+    created  DateTime @default(now())
+    updated  DateTime @updatedAt
 }
