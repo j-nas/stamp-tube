@@ -2,6 +2,6 @@
 
 A place for community submitted youtube timestamps
 
-## Stack
+---
 
-Built using create-t3-app
+Bootstrapped with [`create-t3-app`](https://github.com/t3-oss/create-ts-app)
