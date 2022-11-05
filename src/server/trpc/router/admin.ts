@@ -26,4 +26,23 @@ export const adminRouter = t.router({
         },
       })
     }),
+  deleteUser: adminProcedure.input(z.string()).mutation(({ ctx, input }) => {
+    return ctx.prisma.user.delete({
+      where: { id: input },
+    })
+  }),
+  moderateTimestamp: adminProcedure
+    .input(
+      z.object({
+        timestampId: z.string(),
+        newLabel: z.string(),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      const { timestampId, newLabel } = input
+      return ctx.prisma.timeStamp.update({
+        where: { id: timestampId },
+        data: { label: newLabel },
+      })
+    }),
 })
