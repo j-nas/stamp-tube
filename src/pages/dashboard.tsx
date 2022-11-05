@@ -45,7 +45,7 @@ const Dashboard = () => {
     isLoading: getUserListIsLoading,
     isError: getUserListIsError,
   } = trpc.users.getAllUsers.useQuery()
-  const createNewStamp = trpc.stamps.createStamps.useMutation({
+  const createNewStamp = trpc.stamps.createStamp.useMutation({
     onMutate: async () => {
       ctx.stamps.getStampsByVideo.cancel()
       let optimisticUpdate = await ctx.stamps.getStampsByVideo.fetch(
