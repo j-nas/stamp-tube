@@ -1,11 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 
-const withMT = require("@material-tailwind/react/utils/withMT")
-
-module.exports = withMT({
-  content: ["./src/**/*.{js,ts,jsx,tsx}"],
+module.exports = {
+  content: [
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "node_modules/flowbite-react/**.*.{js,jsx.ts.tsx}",
+  ],
   theme: {
     extend: {},
   },
-  plugins: [require("@tailwindcss/aspect-ratio")],
-})
+  plugins: [require("@tailwindcss/aspect-ratio"), require("flowbite/plugin")],
+  darkMode: "class",
+}

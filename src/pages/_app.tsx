@@ -1,7 +1,6 @@
 // src/pages/_app.tsx
 import "../styles/globals.css"
 import { SessionProvider } from "next-auth/react"
-import { ThemeProvider } from "@material-tailwind/react"
 import type { Session } from "next-auth"
 import type { AppType } from "next/app"
 import { trpc } from "../utils/trpc"
@@ -12,9 +11,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <ThemeProvider>
-        <Component {...pageProps} />
-      </ThemeProvider>
+      <Component {...pageProps} />
     </SessionProvider>
   )
 }
