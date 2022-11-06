@@ -7,6 +7,7 @@ import { useState } from "react"
 import { youtubeIdExtract } from "../utils/urlHelpers"
 import { useRouter } from "next/router"
 import Navbar from "../components/Navbar"
+import Logo from "../assets/stampTubeLogo.svg"
 const Home: NextPage = () => {
   const [urlForm, setUrlForm] = useState("")
   const urlValidation = (url: string) => {
@@ -22,8 +23,10 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar pageTitle="Insert Title Here" />
-      <main className=" dark container mx-auto flex min-h-screen flex-col items-center  p-4">
-        <h1 className="text-3xl">StampTube</h1>
+      <main className=" dark container mx-auto flex min-h-full flex-col items-center pt-4">
+        <h1 className="text-3xl">
+          <Logo />
+        </h1>
         <h2>{urlForm}</h2>
         <p>A place for community submitted timestamps</p>
         <Button>Log in with Google</Button>
@@ -40,11 +43,11 @@ const Home: NextPage = () => {
           Sign up
         </Button>
         <Button onClickFunction={() => signOut()}>Log outs</Button>
-        <form className="p2 border-zinc-400 rounded-md border-2">
+        <form className="p2 rounded-md border-2 border-zinc-400">
           <input type="text" onChange={(e) => setUrlForm(e.target.value)} />
           <button
             type="submit"
-            className="border-zinc-800 rounded-md border-2 p-2 focus:outline-none"
+            className="rounded-md border-2 border-zinc-800 p-2 focus:outline-none"
           >
             submit
           </button>
