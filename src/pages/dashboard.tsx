@@ -2,10 +2,9 @@ import React, { FormEvent, useState } from "react"
 import Head from "next/head"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { trpc } from "../utils/trpc"
-import { Button } from "@material-tailwind/react"
 import { videoList } from "../utils/mockData"
 import { randomUUID as uuid } from "crypto"
-
+import Button from "../components/button"
 enum View {
   VideoInfo = "VIDEO_INFO",
   VideosWithStamps = "VIDEOS_WITH_STAMPS",
@@ -81,7 +80,7 @@ const Dashboard = () => {
       <Head>
         <title>Admin Dashboard</title>
       </Head>
-      <main className="via-fuchsia-400  flex flex-col place-content-center items-center justify-center gap-3 bg-gradient-to-tl from-teal-500 to-purple-900 text-white/50">
+      <main className="flex  flex-col place-content-center items-center justify-center gap-3 bg-gradient-to-tl from-teal-500 via-fuchsia-400 to-purple-900 text-white/50">
         <div className="flex max-h-fit w-1/2 flex-col justify-items-center rounded-2xl bg-black/50 p-2 text-center drop-shadow-xl hover:backdrop-blur-3xl">
           <div>
             <ul>
@@ -96,26 +95,28 @@ const Dashboard = () => {
           {/*navbuttons */}
           <div className="flex flex-row align-middle">
             <>
-              <Button onClick={() => signIn()}>Log in</Button>
+              <Button onClickFunction={() => signIn()}>Log in</Button>
             </>
             <>
-              <Button onClick={() => signOut()}>Log out</Button>
+              <Button onClickFunction={() => signOut()}>Log out</Button>
             </>
             <>
-              <Button onClick={() => setView(View.VideoInfo)}>
+              <Button onClickFunction={() => setView(View.VideoInfo)}>
                 Video Info
               </Button>
             </>
             <>
-              <Button onClick={() => setView(View.StampsByVideo)}>
+              <Button onClickFunction={() => setView(View.StampsByVideo)}>
                 Stamps by Video
               </Button>
-              <Button onClick={() => setView(View.StampsByAuthor)}>
+              <Button onClickFunction={() => setView(View.StampsByAuthor)}>
                 Stamps by Author
               </Button>
 
-              <Button onClick={() => setView(View.UserList)}>User List</Button>
-              <Button onClick={() => setView(View.VideosWithStamps)}>
+              <Button onClickFunction={() => setView(View.UserList)}>
+                User List
+              </Button>
+              <Button onClickFunction={() => setView(View.VideosWithStamps)}>
                 Videos with stampsdsf
               </Button>
             </>
@@ -176,7 +177,7 @@ const Dashboard = () => {
             {status === "authenticated" && (
               <div>
                 <Button
-                  onClick={() =>
+                  onClickFunction={() =>
                     createNewStamp.mutate({
                       author: session?.user?.id as string,
                       video: videoInfo?.id as string,
@@ -200,7 +201,9 @@ const Dashboard = () => {
                     } `}
                     {status === "authenticated" && (
                       <Button
-                        onClick={() => deleteStamp.mutate({ stampId: stmp.id })}
+                        onClickFunction={() =>
+                          deleteStamp.mutate({ stampId: stmp.id })
+                        }
                       >
                         Delete
                       </Button>
@@ -219,7 +222,7 @@ const Dashboard = () => {
             {status === "authenticated" && (
               <div>
                 <Button
-                  onClick={() =>
+                  onClickFunction={() =>
                     createNewStamp.mutate({
                       author: session?.user?.id as string,
                       video: videoInfo?.id as string,
@@ -248,7 +251,9 @@ const Dashboard = () => {
                     </a>
                     {status === "authenticated" && (
                       <Button
-                        onClick={() => deleteStamp.mutate({ stampId: stmp.id })}
+                        onClickFunction={() =>
+                          deleteStamp.mutate({ stampId: stmp.id })
+                        }
                       >
                         Delete
                       </Button>

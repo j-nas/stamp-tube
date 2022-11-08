@@ -1,6 +1,6 @@
 const YoutubeEmbed: React.FC<Props> = ({ embedId }) => {
   return (
-    <div className="aspect-w-16 aspect-h-9 w-80">
+    <div className="aspect-w-16 aspect-h-9 w-full">
       <iframe
         className=""
         src={`https://www.youtube.com/embed/${embedId}`}

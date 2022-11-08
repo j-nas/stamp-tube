@@ -1,87 +1,149 @@
-import React, { useState } from "react"
-import { useRouter } from "next/router"
-import { useSession } from "next-auth/react"
-import Head from "next/head"
-import { v4 as uuidv4 } from "uuid"
-import { trpc } from "../utils/trpc"
-import { newLineFormatter } from "../utils/stringHelpers"
+import { NextComponentType, NextPage } from "next/types"
 import YoutubeEmbed from "../components/youtubeEmbed"
+import { useState } from "react"
 
-const Stamps = () => {
-  const [descMaxLength, setDescMaxLength] = useState(500)
-  const router = useRouter()
-  const ctx = trpc.useContext()
-  const { v } = router.query
-  const { data } = trpc.youtube.getVideoInfo.useQuery({ v })
-  const videoId = data?.data.items[0]?.id
-  console.log(v, data)
-  const title = data?.data.items[0]?.snippet.title
-  const description = data?.data.items[0]?.snippet.description
-  const stamps = trpc.stamps.getStampsByVideo.useQuery(videoId)
-  const createStamps = trpc.stamps.createStamps.useMutation()
-  const { data: session, status } = useSession()
-  if (!title || !description) {
-    return <p>loading</p>
-  }
-  if (typeof v !== "string" || v.length !== 11) {
-    return <p>input has to be an 11 character string</p>
-  }
-  if (!v) {
-    return (
-      <p className="flex flex-col items-center align-middle">nothing here</p>
-    )
-  }
+const VIDEO_ID = "csEjOEUIntw"
 
-  const desc = description.slice(0, descMaxLength)
+const StampCard: NextComponentType = () => {
+  return (
+    <div className="m-6 h-24 w-24 flex-none bg-gray-400 drop-shadow-lg">
+      <p>4:20</p>
+      <p className="text-justify">Cat Scratching at window</p>
+    </div>
+  )
+}
+
+const StampView: NextComponentType = () => {
+  enum View {
+    Description = "DESCRIPTION",
+    Timestamps = "TIMESTAMPS",
+  }
+  const [view, setView] = useState<View>(View.Description)
+
+  return (
+    <div className="mt-2  rounded-t-lg bg-gray-500 p-8 shadow-lg">
+      {/* <div className="flex justify-around text-gray-700">
+        <button className="items-stretch bg-gray-300 p-1">Timestamps</button>
+        <button className="items-stretch bg-gray-300 p-1">
+          Video Description
+        </button>
+      </div> */}
+      <div className="border-b-4 border-gray-900 text-lg">
+        <p>
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eius, cumque
+          maiores <span className="text-gray-300">...</span>
+        </p>
+      </div>
+      <div className=" flex overflow-y-auto ">
+        <StampCard />
+        <StampCard />
+        <StampCard />
+        <StampCard />
+
+        <StampCard />
+
+        {/* <table className="flex table-fixed justify-items-stretch">
+          <tbody>
+            <tr className="">
+              <td className="w-40 basis-1/2 text-right text-blue-500 underline">
+                0:01
+              </td>
+              <td className="w-40 basis-1/2">Cat.</td>
+            </tr>
+            <tr>
+              <td>0:02</td>
+              <td>Cat.</td>
+            </tr>
+            <tr>
+              <td>0:03</td>
+              <td>Cat.</td>
+            </tr>
+            <tr>
+              <td>0:04</td>
+              <td>Cat.</td>
+            </tr>
+          </tbody>
+        </table> */}
+      </div>
+    </div>
+  )
+}
+const NewStampModal: NextComponentType = () => {
+  const [showModal, setShowModal] = useState(false)
+
   return (
     <>
-      <Head key="stamp">
-        <title>{`StampTube: ${title}`}</title>
-      </Head>
-      <main className="min-h-screen max-w-md bg-slate-700 bg-gradient-to-br from-indigo-500">
-        <YoutubeEmbed embedId={v} />
-        <p className="flex flex-col items-center align-middle">
-          Video <a href={`https://www.youtube.com/watch?v=${v}`}>link</a>
-        </p>
-        <div className=" text-white/80">
-          <p id="video-description">
-            {newLineFormatter(desc).map((line) => {
-              return (
-                <React.Fragment key={uuidv4()}>
-                  {line}
-
-                  <br />
-                </React.Fragment>
-              )
-            })}
-          </p>
-          {description.length < 500 ? null : descMaxLength === 500 ? (
-            <a className="underline" onClick={() => setDescMaxLength(99999)}>
-              Show More
-            </a>
-          ) : (
-            <a className="underline" onClick={() => setDescMaxLength(500)}>
-              Show Less
-            </a>
-          )}
-        </div>
-
-        {session ? (
-          <div>
-            <a
-              onClick={() =>
-                createStamps.mutate({
-                  video: videoId,
-                  author: session.user?.id as string,
-                })
-              }
-            >
-              ADD STAMPS MAPHUCKA
-            </a>
+      <button
+        className="mr-1 mb-1 rounded bg-pink-500 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
+        type="button"
+        onClick={() => setShowModal(true)}
+      >
+        Open regular modal
+      </button>
+      {showModal ? (
+        <>
+          <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none">
+            <div className="relative my-6 mx-auto w-auto max-w-3xl">
+              {/*content*/}
+              <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
+                {/*header*/}
+                <div className="flex items-start justify-between rounded-t border-b border-solid border-slate-200 p-5">
+                  <h3 className="text-3xl font-semibold">Modal Title</h3>
+                  <button
+                    className="float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-black opacity-5 outline-none focus:outline-none"
+                    onClick={() => setShowModal(false)}
+                  >
+                    <span className="block h-6 w-6 bg-transparent text-2xl text-black opacity-5 outline-none focus:outline-none">
+                      ×
+                    </span>
+                  </button>
+                </div>
+                {/*body*/}
+                <div className="relative flex-auto p-6">
+                  <p className="my-4 text-lg leading-relaxed text-slate-500">
+                    I always felt like I could do anything. That’s the main
+                    thing people are controlled by! Thoughts- their perception
+                    of themselves! They're slowed down by their perception of
+                    themselves. If you're taught you can’t do anything, you
+                    won’t do anything. I was taught I could do everything.
+                  </p>
+                </div>
+                {/*footer*/}
+                <div className="flex items-center justify-end rounded-b border-t border-solid border-slate-200 p-6">
+                  <button
+                    className="background-transparent mr-1 mb-1 px-6 py-2 text-sm font-bold uppercase text-red-500 outline-none transition-all duration-150 ease-linear focus:outline-none"
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                  >
+                    Close
+                  </button>
+                  <button
+                    className="mr-1 mb-1 rounded bg-emerald-500 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-emerald-600"
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-        ) : null}
-      </main>
+          <div className="fixed inset-0 z-40 bg-black opacity-25"></div>
+        </>
+      ) : null}
     </>
+  )
+}
+export const Stamps: NextPage = () => {
+  return (
+    <div className="h-screen  bg-gray-800 text-white">
+      <div className="sticky top-0 w-full ">
+        <YoutubeEmbed embedId={VIDEO_ID} />
+      </div>
+      <div className="flexflex-col">
+        <StampView />
+      </div>
+    </div>
   )
 }
 
