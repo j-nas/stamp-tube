@@ -6,9 +6,9 @@ const VIDEO_ID = "csEjOEUIntw"
 
 const StampCard: NextComponentType = () => {
   return (
-    <div className="m-6 h-24 w-24 flex-none bg-gray-400 drop-shadow-lg">
-      <p>4:20</p>
+    <div className="m-4 h-24 w-24 flex-none bg-gray-400 p-2 drop-shadow-lg">
       <p className="text-justify">Cat Scratching at window</p>
+      <p className="text-right">4:20</p>
     </div>
   )
 }
