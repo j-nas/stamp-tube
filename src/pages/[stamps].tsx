@@ -21,14 +21,14 @@ const StampView: NextComponentType = () => {
   const [view, setView] = useState<View>(View.Description)
 
   return (
-    <div className="mt-2  rounded-t-lg bg-gray-500 p-8 shadow-lg">
+    <div className="mt-2  rounded-t-lg bg-gray-500 py-8  drop-shadow-lg">
       {/* <div className="flex justify-around text-gray-700">
         <button className="items-stretch bg-gray-300 p-1">Timestamps</button>
         <button className="items-stretch bg-gray-300 p-1">
           Video Description
         </button>
       </div> */}
-      <div className="border-b-4 border-gray-900 text-lg">
+      <div className="border-b-4 border-gray-900 px-8  pb-8 text-lg">
         <p>
           Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eius, cumque
           maiores <span className="text-gray-300">...</span>
