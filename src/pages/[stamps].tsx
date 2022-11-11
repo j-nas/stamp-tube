@@ -1,69 +1,52 @@
 import { NextComponentType, NextPage } from "next/types"
 import YoutubeEmbed from "../components/youtubeEmbed"
 import { useState } from "react"
-
+import { BiEdit, BiDownArrowAlt, BiUpArrowAlt } from "react-icons/bi"
 const VIDEO_ID = "csEjOEUIntw"
 
-const StampCard: NextComponentType = () => {
+const TimeStampCard: NextComponentType = () => {
   return (
-    <div className="m-4 h-24 w-24 flex-none bg-gray-400 p-2 drop-shadow-lg">
-      <p className="text-justify">Cat Scratching at window</p>
-      <p className="text-right">4:20</p>
+    <div className="m-4 flex h-36 w-36 flex-none flex-col justify-items-stretch bg-gray-400 p-2 drop-shadow-lg">
+      <div>
+        <p className="basis-1/2 self-end text-right">4:20</p>
+      </div>
+      <div>
+        <p className="basis-1/2">Cat Scratching at window</p>
+      </div>
     </div>
   )
 }
 
 const StampView: NextComponentType = () => {
-  enum View {
-    Description = "DESCRIPTION",
-    Timestamps = "TIMESTAMPS",
-  }
-  const [view, setView] = useState<View>(View.Description)
-
   return (
-    <div className="mt-2  rounded-t-lg bg-gray-500 py-8  drop-shadow-lg">
-      {/* <div className="flex justify-around text-gray-700">
-        <button className="items-stretch bg-gray-300 p-1">Timestamps</button>
-        <button className="items-stretch bg-gray-300 p-1">
-          Video Description
-        </button>
-      </div> */}
-      <div className="border-b-4 border-gray-900 px-8  pb-8 text-lg">
-        <p>
+    <div className="m-2 mt-8 rounded-lg bg-gray-500 py-4  drop-shadow-lg">
+      <div className="border-b-4 border-gray-900 px-3  pb-2 text-lg">
+        <p className="text-ellipsis text-start leading-tight">
           Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eius, cumque
           maiores <span className="text-gray-300">...</span>
         </p>
       </div>
       <div className=" flex overflow-y-auto ">
-        <StampCard />
-        <StampCard />
-        <StampCard />
-        <StampCard />
-
-        <StampCard />
-
-        {/* <table className="flex table-fixed justify-items-stretch">
-          <tbody>
-            <tr className="">
-              <td className="w-40 basis-1/2 text-right text-blue-500 underline">
-                0:01
-              </td>
-              <td className="w-40 basis-1/2">Cat.</td>
-            </tr>
-            <tr>
-              <td>0:02</td>
-              <td>Cat.</td>
-            </tr>
-            <tr>
-              <td>0:03</td>
-              <td>Cat.</td>
-            </tr>
-            <tr>
-              <td>0:04</td>
-              <td>Cat.</td>
-            </tr>
-          </tbody>
-        </table> */}
+        <TimeStampCard />
+        <TimeStampCard />
+        <TimeStampCard />
+        <TimeStampCard />
+        <TimeStampCard />
+      </div>
+      <div className="mx-2 pb-8">
+        <div className="float-left text-right">+3</div>
+        <div className="float-right">Submitted by </div>
+      </div>
+      <div className="pb-3">
+        <button className="absolute left-3 -bottom-8 z-50 rounded-full bg-gray-600 p-2 text-5xl text-gray-50 drop-shadow-2xl">
+          <BiUpArrowAlt />
+        </button>
+        <button className="absolute left-20 -bottom-8 z-50 rounded-full bg-gray-600 p-2 text-5xl text-gray-50 drop-shadow-2xl">
+          <BiDownArrowAlt />
+        </button>
+        <button className="absolute right-3 -bottom-8 z-50 rounded-full bg-gray-600 p-2 text-5xl text-gray-50 drop-shadow-2xl">
+          <BiEdit />
+        </button>
       </div>
     </div>
   )
@@ -134,14 +117,22 @@ const NewStampModal: NextComponentType = () => {
     </>
   )
 }
+const StampList: NextComponentType = () => {
+  return (
+    <div className="m-2 mt-8 rounded-lg bg-gray-500 py-4 text-gray-300  drop-shadow-lg">
+      this is a list of stamps
+    </div>
+  )
+}
 export const Stamps: NextPage = () => {
   return (
     <div className="h-screen  bg-gray-800 text-white">
-      <div className="sticky top-0 w-full ">
+      <div className="sticky top-0 z-50 w-full ">
         <YoutubeEmbed embedId={VIDEO_ID} />
       </div>
-      <div className="flexflex-col">
+      <div className="flex flex-col gap-1">
         <StampView />
+        <StampList />
       </div>
     </div>
   )
