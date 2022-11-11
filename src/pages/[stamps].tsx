@@ -6,12 +6,15 @@ const VIDEO_ID = "csEjOEUIntw"
 
 const TimeStampCard: NextComponentType = () => {
   return (
-    <div className="m-4 flex h-36 w-36 flex-none flex-col justify-items-stretch bg-gray-400 p-2 drop-shadow-lg">
+    <div className="m-4 grid h-36 w-36 flex-none justify-items-stretch bg-gray-400 p-2 drop-shadow-lg">
       <div>
         <p className="basis-1/2 self-end text-right">4:20</p>
       </div>
       <div>
-        <p className="basis-1/2">Cat Scratching at window</p>
+        <p className="">
+          {/* max length 64 characterts */}
+          Cat Scratching at window Lorem, ipsum dolor sit amet consectetur
+        </p>
       </div>
     </div>
   )
@@ -33,18 +36,18 @@ const StampView: NextComponentType = () => {
         <TimeStampCard />
         <TimeStampCard />
       </div>
-      <div className="mx-2 pb-8">
+      <div className="mx-2 px-2 pb-8">
         <div className="float-left text-right">+3</div>
         <div className="float-right">Submitted by </div>
       </div>
-      <div className="pb-3">
-        <button className="absolute left-3 -bottom-8 z-50 rounded-full bg-gray-600 p-2 text-5xl text-gray-50 drop-shadow-2xl">
+      <div className="relative pb-3">
+        <button className="absolute left-3 -bottom-12 z-50 rounded-full bg-gray-600 p-2 text-5xl text-gray-50 drop-shadow-2xl">
           <BiUpArrowAlt />
         </button>
-        <button className="absolute left-20 -bottom-8 z-50 rounded-full bg-gray-600 p-2 text-5xl text-gray-50 drop-shadow-2xl">
+        <button className="absolute left-20 -bottom-12 z-50 rounded-full bg-gray-600 p-2 text-5xl text-gray-50 drop-shadow-2xl">
           <BiDownArrowAlt />
         </button>
-        <button className="absolute right-3 -bottom-8 z-50 rounded-full bg-gray-600 p-2 text-5xl text-gray-50 drop-shadow-2xl">
+        <button className="absolute right-3 -bottom-12 z-50 rounded-full bg-gray-600 p-2 text-5xl text-gray-50 drop-shadow-2xl">
           <BiEdit />
         </button>
       </div>
@@ -119,18 +122,54 @@ const NewStampModal: NextComponentType = () => {
 }
 const StampList: NextComponentType = () => {
   return (
-    <div className="m-2 mt-8 rounded-lg bg-gray-500 py-4 text-gray-300  drop-shadow-lg">
-      this is a list of stamps
+    <div className=" m-2 mt-8 flex rounded-lg bg-gray-500 py-4 text-gray-300  drop-shadow-lg">
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th>Date submitted</th>
+              <th>Author</th>
+              <th>Number of timestamps</th>
+              <th>Rating</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Today</td>
+              <td>Runic Letters</td>
+              <th>69</th>
+              <th>420</th>
+            </tr>
+            <tr>
+              <td>Today</td>
+              <td>Runic Letters</td>
+              <th>69</th>
+              <th>420</th>
+            </tr>
+            <tr>
+              <td>Today</td>
+              <td>Runic Letters</td>
+              <th>69</th>
+              <th>420</th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }
 export const Stamps: NextPage = () => {
   return (
-    <div className="h-screen  bg-gray-800 text-white">
-      <div className="sticky top-0 z-50 w-full ">
-        <YoutubeEmbed embedId={VIDEO_ID} />
+    <div className="h-full bg-gray-800 text-white">
+      <div className="sticky top-0 z-50 w-full  md:static md:grid md:max-h-screen md:w-1/2 md:grid-flow-row md:pl-8 md:pt-8">
+        <div>
+          <YoutubeEmbed embedId={VIDEO_ID} />
+        </div>
+        <div className="hidden md:inline">
+          <StampView />
+        </div>
       </div>
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 md:hidden">
         <StampView />
         <StampList />
       </div>
