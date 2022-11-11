@@ -137,20 +137,30 @@ const StampList: NextComponentType = () => {
             <tr>
               <td>Today</td>
               <td>Runic Letters</td>
-              <th>69</th>
-              <th>420</th>
+              <td>69</td>
+              <td>420</td>
+              <td>
+                <a>Set active</a>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Today</td>
+              <td>Runic Letters</td>
+              <td>69</td>
+              <td>420</td>
+              <td>
+                <a>Set active</a>
+              </td>
             </tr>
             <tr>
               <td>Today</td>
               <td>Runic Letters</td>
-              <th>69</th>
-              <th>420</th>
-            </tr>
-            <tr>
-              <td>Today</td>
-              <td>Runic Letters</td>
-              <th>69</th>
-              <th>420</th>
+              <td>69</td>
+              <td>420</td>
+              <td>
+                <a>Set active</a>
+              </td>
             </tr>
           </tbody>
         </table>
