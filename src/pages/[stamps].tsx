@@ -176,12 +176,22 @@ const StampList: NextComponentType = () => {
                 <a>Set active</a>
               </td>
             </tr>
+            <tr>
+              <td className="text-center" colSpan={5}>
+                Submit timestamps
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
     </div>
   )
 }
+
+const NavBar: NextComponentType = () => {
+  return <nav></nav>
+}
+
 export const Stamps: NextPage = () => {
   return (
     <div className="font- min-h-screen bg-neutral-800 text-white">
