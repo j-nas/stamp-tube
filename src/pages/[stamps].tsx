@@ -6,7 +6,7 @@ const VIDEO_ID = "csEjOEUIntw"
 
 const TimeStampCard: NextComponentType = () => {
   return (
-    <div className="m-4 grid h-36 w-36 flex-none justify-items-stretch bg-gray-400 p-2 drop-shadow-lg">
+    <div className="m-4 grid h-36 w-36 flex-none snap-center justify-items-stretch bg-neutral-400 p-2 drop-shadow-lg">
       <div>
         <p className="basis-1/2 self-end text-right">4:20</p>
       </div>
@@ -22,11 +22,11 @@ const TimeStampCard: NextComponentType = () => {
 
 const StampView: NextComponentType = () => {
   return (
-    <div className="m-2 mt-8 rounded-lg bg-gray-500 py-4  drop-shadow-lg">
-      <div className="border-b-4 border-gray-900 px-3  pb-2 text-lg">
+    <div className="m-2 mt-8 rounded-lg bg-neutral-500 py-4 drop-shadow-lg  md:mt-0">
+      <div className="border-b-4 border-neutral-900 px-3  pb-2 text-lg">
         <p className="text-ellipsis text-start leading-tight">
           Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eius, cumque
-          maiores <span className="text-gray-300">...</span>
+          maiores <span className="text-neutral-300">...</span>
         </p>
       </div>
       <div className=" flex overflow-y-auto ">
@@ -41,13 +41,25 @@ const StampView: NextComponentType = () => {
         <div className="float-right">Submitted by </div>
       </div>
       <div className="relative pb-3">
-        <button className="absolute left-3 -bottom-12 z-50 rounded-full bg-gray-600 p-2 text-5xl text-gray-50 drop-shadow-2xl">
+        <button
+          type="button"
+          aria-label="up vote"
+          className="absolute left-3 -bottom-12 z-50 rounded-full bg-neutral-600 p-2 text-5xl text-neutral-50 drop-shadow-2xl"
+        >
           <BiUpArrowAlt />
         </button>
-        <button className="absolute left-20 -bottom-12 z-50 rounded-full bg-gray-600 p-2 text-5xl text-gray-50 drop-shadow-2xl">
+        <button
+          type="button"
+          aria-label="down vote"
+          className="absolute left-20 -bottom-12 z-50 rounded-full bg-neutral-600 p-2 text-5xl text-neutral-50 drop-shadow-2xl"
+        >
           <BiDownArrowAlt />
         </button>
-        <button className="absolute right-3 -bottom-12 z-50 rounded-full bg-gray-600 p-2 text-5xl text-gray-50 drop-shadow-2xl">
+        <button
+          type="button"
+          aria-label="edit"
+          className="absolute right-3 -bottom-12 z-50 rounded-full bg-neutral-600 p-2 text-5xl text-neutral-50 drop-shadow-2xl"
+        >
           <BiEdit />
         </button>
       </div>
@@ -122,43 +134,45 @@ const NewStampModal: NextComponentType = () => {
 }
 const StampList: NextComponentType = () => {
   return (
-    <div className=" m-2 mt-8 flex rounded-lg bg-gray-500 py-4 text-gray-300  drop-shadow-lg">
+    <div className=" m-2 mt-8 flex place-content-center rounded-lg bg-neutral-500 p-4 text-neutral-300  drop-shadow-lg">
       <div>
-        <table>
-          <thead>
-            <tr>
+        <table className="">
+          <thead className="bg-neutral-700">
+            <tr className="">
               <th>Date submitted</th>
               <th>Author</th>
-              <th>Number of timestamps</th>
               <th>Rating</th>
+              <th colSpan={2} className="text-left">
+                stamps
+              </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-yr">
             <tr>
-              <td>Today</td>
-              <td>Runic Letters</td>
-              <td>69</td>
-              <td>420</td>
-              <td>
+              <td className="py-4 px-6">Today</td>
+              <td className="py-4 px-6">Runic Letters</td>
+              <td className="py-4 px-6">69</td>
+              <td className="py-4 px-6">420</td>
+              <td className="py-4 px-6 text-right">
                 <a>Set active</a>
               </td>
             </tr>
 
             <tr>
-              <td>Today</td>
-              <td>Runic Letters</td>
-              <td>69</td>
-              <td>420</td>
-              <td>
+              <td className="py-4 px-6">Today</td>
+              <td className="py-4 px-6">Runic Letters</td>
+              <td className="py-4 px-6">69</td>
+              <td className="py-4 px-6">420</td>
+              <td className="py-4 px-6 text-right">
                 <a>Set active</a>
               </td>
             </tr>
             <tr>
-              <td>Today</td>
-              <td>Runic Letters</td>
-              <td>69</td>
-              <td>420</td>
-              <td>
+              <td className="py-4 px-6">Today</td>
+              <td className="py-4 px-6">Runic Letters</td>
+              <td className="py-4 px-6">69</td>
+              <td className="py-4 px-6">420</td>
+              <td className="py-4 px-6 text-right">
                 <a>Set active</a>
               </td>
             </tr>
@@ -170,14 +184,17 @@ const StampList: NextComponentType = () => {
 }
 export const Stamps: NextPage = () => {
   return (
-    <div className="h-full bg-gray-800 text-white">
-      <div className="sticky top-0 z-50 w-full  md:static md:grid md:max-h-screen md:w-1/2 md:grid-flow-row md:pl-8 md:pt-8">
-        <div>
+    <div className="font- min-h-screen bg-neutral-800 text-white">
+      <div className="sticky top-0 z-50 w-full  md:static md:flex md:max-h-screen  md:place-content-stretch md:p-8 md:pt-8">
+        <div className="md:w-1/2 md:place-self-center">
           <YoutubeEmbed embedId={VIDEO_ID} />
         </div>
-        <div className="hidden md:inline">
+        <div className="hidden md:block md:w-1/2 md:place-self-center">
           <StampView />
         </div>
+      </div>
+      <div className="hidden md:flex md:place-content-center">
+        <StampList />
       </div>
       <div className="flex flex-col gap-1 md:hidden">
         <StampView />
